@@ -42,9 +42,14 @@ const getAllArticles = async (req, res, next) => {
         .sort({createdAt: -1})
         .limit(limit)
         .skip(skip);
-
-    } catch (error) {
         
+        res.status(200).json({
+            message: "Articles successfully retrieved!",
+            count: articles.length,
+            articles: articles
+        });
+    } catch (error) {
+        next(error);
     }
 };
 
