@@ -1,7 +1,7 @@
 const Joi = require("joi");
 const ArticleModel = require("../models/article.model");
 
-createArticle = async (req, res) => {
+const createArticle = async (req, res) => {
     const newArticle = Joi.object({
         title: Joi.string().min(5).required(),
         slug: Joi.string().required(),
@@ -45,6 +45,43 @@ const getAllArticles = async (req, res, next) => {
 
     } catch (error) {
         
+    }
+};
+
+
+const searchArticles = async (req, res, next) => {
+    const {q, limit=10, page=1} = req.query;
+
+    if (!q) {
+        return res.status(400).json({
+            message: "Search query (q) is required!"
+        });
+    }
+
+    const skip = (page - 1) * limit;
+
+    try {
+        const articles = await ArticleModel.find(
+            {$text: {$search: q}},
+            {score: {$meta: "textScore"}}
+        )
+        .sort({score: {$meta: "textScore"}})
+        .limit(parseInt(limit))
+        .skip(parseInt(skip));
+
+        if (articles.length === 0) {
+            return res.status(404).json({
+                message: "No articles found matching your search query!"
+            });
+        }
+
+        res.status(200).json({
+            message: "Articles successfully retrieved!",
+            count: articles.length,
+            articles: articles
+        });
+    } catch (error) {
+        next(error);
     }
 };
 
@@ -128,3 +165,37 @@ const updateArticleById = async (req, res, next) => {
     }
 };
 
+
+
+const deleteArticleById = async (req, res, next) => {
+    const {id} = req.params;
+
+    try {
+        
+        const deletedArticle = await ArticleModel.findByIdAndDelete(id);
+        if (!deletedArticle) {
+            return res.status(404).json({
+                message: "Article not Found!"
+            })
+        }
+
+        res.status(200).json({
+            message: `Article with id ${id} successfully deleted!`
+        })
+    } catch (error) {
+        next(error);
+        
+    }
+
+};
+
+
+module.exports = {
+    createArticle,
+    getAllArticles,
+    searchArticles,
+    getArticleById,
+    getArticleBySlug,
+    updateArticleById,
+    deleteArticleById  
+};
