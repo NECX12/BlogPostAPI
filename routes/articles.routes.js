@@ -10,11 +10,19 @@ const {
     deleteArticleById
 } = require('../controllers/articles.controllers');
 
+//router.post('/articles', createArticle);
+//router.get('/articles', getAllArticles);
+//router.get('/articles/search', searchArticles);
+//router.get('/articles/:id', getArticleById);
+//router.get('/articles/slug/:slug', getArticleBySlug);
+//router.put('/articles/:id', updateArticleById);
+//router.delete('/articles/:id', deleteArticleById);
+
+router.get('/articles/search', searchArticles);
+router.get('/articles/slug/:slug', getArticleBySlug);
+router.get('/articles/:id', getArticleById);
 router.post('/articles', createArticle);
 router.get('/articles', getAllArticles);
-router.get('/articles/search', searchArticles);
-router.get('/articles/:id', getArticleById);
-router.get('/articles/slug/:slug', getArticleBySlug);
 router.put('/articles/:id', updateArticleById);
 router.delete('/articles/:id', deleteArticleById);
 

@@ -55,7 +55,7 @@ const getAllArticles = async (req, res, next) => {
 
 
 const searchArticles = async (req, res, next) => {
-    const {q, limit=10, page=1} = req.query;
+    let {q, limit=10, page=1} = req.query;
 
     if (!q) {
         return res.status(400).json({
@@ -63,6 +63,8 @@ const searchArticles = async (req, res, next) => {
         });
     }
 
+    limit = parseInt(limit);
+    page = parseInt(page);
     const skip = (page - 1) * limit;
 
     try {
@@ -70,9 +72,9 @@ const searchArticles = async (req, res, next) => {
             {$text: {$search: q}},
             {score: {$meta: "textScore"}}
         )
-        .sort({score: {$meta: "textScore"}})
-        .limit(parseInt(limit))
-        .skip(parseInt(skip));
+        .sort({score: -1}) 
+        .limit(limit)
+        .skip(skip);
 
         if (articles.length === 0) {
             return res.status(404).json({
