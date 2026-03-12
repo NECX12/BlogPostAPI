@@ -1,7 +1,7 @@
 const Joi = require("joi");
 const ArticleModel = require("../models/article.model");
 
-const createArticle = async (req, res) => {
+const createArticle = async (req, res, next) => {
     const newArticle = Joi.object({
         title: Joi.string().min(5).required(),
         slug: Joi.string().required(),

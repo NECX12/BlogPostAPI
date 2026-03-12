@@ -10,6 +10,7 @@ const Joi = require("joi");
 const RequestLogger = require("./middleware/logger");
 const errorHandler = require("./middleware/errorhandler");
 const articlesRoutes = require("./routes/articles.routes");
+const usersRoutes = require("./routes/users.routes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,6 +21,7 @@ app.use(express.json());
 app.use(RequestLogger);
 
 app.use("/api", articlesRoutes);
+app.use("/api/users", usersRoutes);
 
 app.use(errorHandler);
 
