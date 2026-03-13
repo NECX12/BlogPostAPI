@@ -19,12 +19,13 @@ const requireAuth = require('../middleware/requireAuth');
 //router.put('/articles/:id', updateArticleById);
 //router.delete('/articles/:id', deleteArticleById);
 
-router.get('/articles/search', searchArticles);
-router.get('/articles/slug/:slug', getArticleBySlug);
-router.get('/articles/:id', getArticleById);
-router.post('/articles', createArticle);
+router.get('/articles/search', requireAuth, searchArticles);
+router.get('/articles/slug/:slug', requireAuth, getArticleBySlug);
+router.get('/articles/:id', requireAuth, getArticleById);
 router.get('/articles', requireAuth, getAllArticles);
-router.put('/articles/:id', updateArticleById);
-router.delete('/articles/:id', deleteArticleById);
+router.post('/articles', requireAuth, createArticle);
+router.get('/articles', requireAuth, getAllArticles);
+router.put('/articles/:id', requireAuth, updateArticleById);
+router.delete('/articles/:id', requireAuth, deleteArticleById);
 
 module.exports = router;

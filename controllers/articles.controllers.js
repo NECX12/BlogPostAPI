@@ -6,7 +6,7 @@ const createArticle = async (req, res, next) => {
         title: Joi.string().min(5).required(),
         slug: Joi.string().required(),
         content: Joi.string().required(),
-        summary: Joi.string()
+        summary: Joi.string(),
     })
 
     const {error, value} = newArticle.validate(req.body);
@@ -17,7 +17,13 @@ const createArticle = async (req, res, next) => {
     }
 
     try {
-        const newArticle = new ArticleModel(value);
+        const newArticle = new ArticleModel({
+            title: value.title,
+            slug: value.slug,
+            content: value.content,
+            summary: value.summary,
+            author: req.user._id
+        });
         await newArticle.save();
         return res.status(201).json({
             message: "Article Successfully Created!",
@@ -38,7 +44,7 @@ const getAllArticles = async (req, res, next) => {
 
     try {
         
-        const articles = await ArticleModel.find({})
+        const articles = await ArticleModel.find({}).populate("author", "name _id email")
         .sort({createdAt: -1})
         .limit(limit)
         .skip(skip);
